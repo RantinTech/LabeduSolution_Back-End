@@ -7,7 +7,7 @@ Antes de executar este projeto, siga os passos abaixo para configurar corretamen
 
 Clone este repositório para o seu computador:
 ```bash
-git clone https://github.com/seu-usuario/seu-repositorio.git
+git clone https://github.com/RantinTech/LabeduSolution_Back-End.git
 ```
 
 Depois, entre na pasta do projeto:
