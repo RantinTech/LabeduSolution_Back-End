@@ -3,6 +3,54 @@
 
 Antes de executar este projeto, siga os passos abaixo para configurar corretamente o ambiente de desenvolvimento.
 
+# ⚙️ Projeto Python - Estrutura Modular
+
+Este repositório contém um projeto Python estruturado em módulos organizados por responsabilidades.  
+O foco é facilitar a manutenção, escalabilidade e implantação (inclusive na **Vercel**).
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+├── api/
+│ ├── init.py
+│ ├── login.py
+│ ├── register.py
+│ └── users.py
+│
+├── core/
+│ ├── init.py
+│ ├── config.py
+│ ├── database.py
+│ └── security.py
+│
+├── models/
+│ ├── init.py
+│ └── user_model.py
+│
+├── services/
+│ ├── init.py
+│ └── user_service.py
+│
+├── .gitignore
+├── LICENSE
+├── README.md
+├── requirements.txt
+└── vercel.json
+```
+
+### 📦 Descrição dos Diretórios
+
+| Diretório | Descrição |
+|------------|------------|
+| **api/** | Contém os endpoints e rotas da aplicação (ex: login, registro e listagem de usuários). |
+| **core/** | Reúne a configuração principal, conexão com banco de dados e regras de segurança. |
+| **models/** | Define os modelos de dados e entidades utilizadas na aplicação. |
+| **services/** | Contém a lógica de negócio e serviços de suporte aos endpoints. |
+| **requirements.txt** | Lista todas as dependências do projeto. |
+| **vercel.json** | Arquivo de configuração para deploy na plataforma Vercel. |
+
 ## 🔧 1. Clonar o repositório
 
 Clone este repositório para o seu computador:
