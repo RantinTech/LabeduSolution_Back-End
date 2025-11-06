@@ -12,7 +12,7 @@ git clone https://github.com/RantinTech/LabeduSolution_Back-End.git
 
 Depois, entre na pasta do projeto:
 ```
-cd seu-repositorio
+cd LabeduSolution_Back-End
 ``` 
 ## 🧩 2. (Opcional) Criar um ambiente virtual
 
