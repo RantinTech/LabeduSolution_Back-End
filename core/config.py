@@ -1,7 +1,14 @@
-import os
-from dotenv import load_dotenv
+from pydantic_settings import BaseSettings
 
-load_dotenv()  # Carrega variáveis do .env se estiver rodando localmente
 
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+class Settings(BaseSettings):
+    SUPABASE_URL: str
+    SUPABASE_KEY: str
+    JWT_SECRET: str = "supersecret123"
+    JWT_ALGORITHM: str = "HS256"
+    JWT_EXPIRES: int = 60 * 24  # 24 horas
+
+    class Config:
+        env_file = ".env"
+
+settings = Settings()
