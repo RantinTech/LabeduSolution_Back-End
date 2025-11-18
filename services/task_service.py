@@ -4,8 +4,21 @@ from schemas.task_schema import TaskCreate, TaskUpdate
 import datetime
 
 def list_task():
-    response = supabase.table("Task").select("*").execute()
-    return response.data
+    task_res = supabase.table("Task").select("*").execute()
+    tasks = task_res.data
+    full_task = []
+
+    for task in tasks:
+        responsible_id = task.get("Responsible")
+        
+        user_res = supabase.table("User").select("*").eq("id", responsible_id).single().execute()
+        user_data = user_res.data if user_res.data else None
+
+        full_task.append({
+            **task,
+            "Colaborador": user_data
+        })
+    return full_task
 
 def create_task(task: TaskCreate):
     response = supabase.table("Task").insert({

@@ -1,11 +1,10 @@
 from core.config import supabase
-from schemas.user_schema import UserLogin, UserCreate
+from schemas.user_schema import UserLogin, UserCreate, UserUpdate
 from postgrest.exceptions import APIError
 from typing import Optional
 
 
 def create_user(user: UserCreate):
-    # 1) Criar usuário no Auth
     auth_res = supabase.auth.sign_up({
         "email": user.email,
         "password": user.password
@@ -15,8 +14,6 @@ def create_user(user: UserCreate):
         raise Exception("Erro ao criar usuário no Supabase Auth")
 
     user_id = auth_res.user.id
-
-    # 2) Inserir dados extras na tabela User (sem senha)
     try:
         supabase.table("User").insert({
             "id": user_id,
@@ -66,3 +63,21 @@ def login_user(user: UserLogin):
 def list_user():
     response = supabase.table("User").select("*").execute()
     return response.data
+
+def update_user(user_id: str, updates: UserUpdate):
+    data_to_update = {}
+
+    if updates.nome is not None:
+        data_to_update["Name"] = updates.nome
+
+    if updates.sobrenome is not None:
+        data_to_update["Surname"] = updates.sobrenome
+
+    if updates.nome is not None:
+        data_to_update["Email"] = updates.nome
+
+    if updates.nome is not None:
+        data_to_update["Admin"] = updates.nome
+
+    if updates.nome is not None:
+        data_to_update["Name"] = updates.nome
