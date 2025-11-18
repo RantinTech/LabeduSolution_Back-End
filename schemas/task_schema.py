@@ -11,4 +11,7 @@ class TaskCreate(BaseModel):
     data_prazo: Optional[date]
 
 class TaskUpdate(BaseModel):
-    status: str
+    descricao: Optional[str] = None
+    status: str = None
+    prazo: Optional[date] = None
+    responsavel: Optional[str] = None

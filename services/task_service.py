@@ -32,6 +32,35 @@ def create_task(task: TaskCreate):
     }).execute()
     return response.data
 
-def update_task_status(task_id: int, status: str):
-    response = supabase.table("Task").update({"Status": status}).eq("id", int(task_id)).execute()
-    return response.data
+def update_task_service(task_id: int, updates: TaskUpdate):
+    data_to_update = {}
+
+    if updates.descricao is not None:
+        data_to_update["Description"] = updates.descricao
+
+    if updates.status is not None:
+        data_to_update["Status"] = updates.status
+
+    if updates.prazo is not None:
+        data_to_update["Date_Deadline"] = updates.prazo.isoformat()
+
+    if updates.responsavel is not None:
+        data_to_update["Responsible"] = updates.responsavel
+
+    # caso nada tenha sido enviado
+    if not data_to_update:
+        return {"message": "Nenhum campo enviado para atualização"}
+
+    # executa a atualização
+    response = (
+        supabase.table("Task")
+        .update(data_to_update)
+        .eq("id", int(task_id))
+        .execute()
+    )
+
+    return {
+        "message": "Tarefa atualizada com sucesso",
+        "updated_fields": data_to_update,
+        "task": response.data
+    }
