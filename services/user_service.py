@@ -2,6 +2,7 @@ from core.config import supabase
 from schemas.user_schema import UserLogin, UserCreate, UserUpdate
 from postgrest.exceptions import APIError
 from typing import Optional
+from datetime import date
 
 
 def create_user(user: UserCreate):
@@ -18,7 +19,15 @@ def create_user(user: UserCreate):
         supabase.table("User").insert({
             "id": user_id,
             "Name": user.name,
-            "Email": user.email
+            "Email": user.email,
+            "Surname": user.surname,
+            "Locality": user.locality,
+            "Course": user.course,
+            "Cpf": user.cpf,
+            "Password": user.password,
+            "Date_Register": date.today().isoformat(),
+            "Admin": user.admin,
+            "Assessment": float(5.0)
         }).execute()
     except APIError as e:
         # rollback: remove user do auth se falhar
