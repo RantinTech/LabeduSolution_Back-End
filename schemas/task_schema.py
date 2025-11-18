@@ -15,3 +15,5 @@ class TaskUpdate(BaseModel):
     status: str = None
     prazo: Optional[date] = None
     responsavel: Optional[str] = None
+
+

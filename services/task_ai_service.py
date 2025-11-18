@@ -51,29 +51,27 @@ def parse_deadline(date_str: str):
 
 
 def analyze_task(task: dict):
-    """Analisa risco, atraso e status"""
+    """Retorna 'Atrasada' se a task realmente estiver atrasada"""
 
-    # Campos obrigatórios
-    if "Date_Deadline" not in task or task["Date_Deadline"] is None:
+    if "Date_Deadline" not in task or not task["Date_Deadline"]:
         return task["Status"]
 
     deadline = parse_deadline(task["Date_Deadline"])
-    if deadline is None:
+    if not deadline:
         return task["Status"]
 
     now = datetime.now(timezone.utc)
     status = task["Status"]
-    
 
-    # Regra: atraso
-    if now > deadline and status != "Atrasada":
+    # Verifica atraso REAL
+    if now > deadline:
         return "Atrasada"
 
     return status
 
 
 def run_task_monitor():
-    """IA principal — monitora tarefas"""
+    """IA que apenas monitora e envia e-mails — sem atualizar banco"""
 
     print("🔍 IA monitorando tarefas...")
 
@@ -83,24 +81,26 @@ def run_task_monitor():
     if not tasks:
         return {"message": "Nenhuma tarefa encontrada"}
 
+    total_alertas = 0
+
     for task in tasks:
         new_status = analyze_task(task)
 
-        if new_status != task["Status"]:
-
-            # atualiza no banco
-            supabase.table("Task").update({
-                "Status": new_status
-            }).eq("id", task["id"]).execute()
-
-            # envia email, se houver email do responsável
-            if "Email" in task and task["Email"]:
-                send_alert_email(
+        # Se está atrasada, envia e-mail — sem mexer na task no banco
+        if new_status == "Atrasada":
+            print("Atrasada")
+            #if "Email" in task and task["Email"]:
+            send_alert_email(
                     to_email=task["Email"],
                     task_name=task.get("Name", "Tarefa sem nome"),
                     status=new_status
                 )
+            total_alertas += 1
 
-            print(f"Tarefa {task['id']} atualizada para {new_status}")
+            print(f"⚠ Alerta enviado para responsável da tarefa {task['id']}")
 
-    return {"message": "Monitoramento concluído", "data prazo": task["Date_Deadline"]}
+    return {
+        "message": "Monitoramento concluído",
+        "alertas_enviados": total_alertas,
+        "Prazo": task["Date_Deadline"]
+    }

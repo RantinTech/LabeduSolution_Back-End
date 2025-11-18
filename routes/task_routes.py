@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from schemas.task_schema import TaskCreate, TaskUpdate
-from services.task_service import create_task, list_task, update_task_service
+from services.task_service import create_task, list_task, update_task_service, delete_task_service
 
 router = APIRouter(
     prefix="/tasks",
@@ -14,6 +14,10 @@ def get_tasks():
 @router.post("/")
 def add_task(task: TaskCreate):
     return {"task": create_task(task)}
+
+@router.delete("/trash/{task_id}")
+def remove_task(task_id: int):
+    return{"task": delete_task_service(task_id)}
 
 @router.put("/{task_id}")
 def update_task(task_id: int,task: TaskUpdate):
