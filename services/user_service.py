@@ -47,11 +47,15 @@ def login_user(user: UserLogin):
             return None
 
         is_admin = user_data.data.get("Admin")
+        name_user = user_data.data.get("Name")
+        photo_user = user_data.data.get("Photo_Profile")
 
         return {
             "access_token": res.session.access_token,
             "refresh_token": res.session.refresh_token,
             "user_id": res.user.id,
+            "name_user": name_user,
+            "photo_user": photo_user,
             "email": res.user.email,
             "is_admin": is_admin
 
