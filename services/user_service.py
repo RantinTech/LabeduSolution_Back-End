@@ -100,22 +100,22 @@ def list_user():
     return formatted_users
 
 
-def update_user(user_id: str, updates: UserUpdate):
+def update_user_service(user_id: str, updates: UserUpdate):
     data_to_update = {}
 
-    if updates.nome is not None:
+    if updates.nome not in (None, ""):
         data_to_update["Name"] = updates.nome
 
-    if updates.sobrenome is not None:
+    if updates.sobrenome not in (None, ""):
         data_to_update["Surname"] = updates.sobrenome
 
-    if updates.email is not None:
+    if updates.email not in (None, ""):
         data_to_update["Email"] = updates.email
 
     if updates.admin is not None:
         data_to_update["Admin"] = updates.admin
 
-    if updates.foto is not None:
+    if updates.foto not in (None, ""):
         data_to_update["Photo_Profile"] = updates.foto
 
     # caso nenhum campo tenha sido enviado
@@ -127,7 +127,7 @@ def update_user(user_id: str, updates: UserUpdate):
         supabase.table("User").update(data_to_update).eq("id", user_id).execute()
 
         # se o email foi alterado, atualiza também no Auth
-        if updates.email is not None:
+        if updates.email not in (None, ""):
             supabase.auth.admin.update_user_by_id(user_id, {
                 "email": updates.email
             })
@@ -138,4 +138,4 @@ def update_user(user_id: str, updates: UserUpdate):
         }
     
     except APIError as e:
-        raise Exception(f"Erro ao atualizar usuário: {e}")
+        raise Exception(f"Erro ao atualizar usuário: {str(e)}")
