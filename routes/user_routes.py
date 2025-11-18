@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from schemas.user_schema import UserLogin, UserCreate, UserUpdate
-from services.user_service import create_user, login_user, list_user
+from services.user_service import create_user, login_user, list_user, update_user_service
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -24,7 +24,7 @@ def users():
 @router.put("/{user_id}")
 def update_user(user_id: str, data: UserUpdate):
     try:
-        result = update_user(user_id, data)
+        result = update_user_service(user_id, data)
         return result
     
     except Exception as e:
