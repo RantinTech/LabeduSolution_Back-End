@@ -64,3 +64,19 @@ def update_task_service(task_id: int, updates: TaskUpdate):
         "updated_fields": data_to_update,
         "task": response.data
     }
+
+
+def delete_task_service(task_id: int):
+
+    # executa a atualização
+    response = (
+        supabase.table("Task")
+        .delete()
+        .eq("id", int(task_id))
+        .execute()
+    )
+
+    return {
+        "message": "Tarefa deletada com sucesso",
+        "deleted_task": response.data
+    }
