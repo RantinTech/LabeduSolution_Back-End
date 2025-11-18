@@ -4,5 +4,12 @@
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1.py" }
+  ],
+  "crons": [
+    {
+      "path": "/ai/run",
+      "schedule": "0 * * * *" 
+    }
   ]
+
 }
