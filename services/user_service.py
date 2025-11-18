@@ -86,6 +86,7 @@ def list_user():
 
         # Montar objeto final no formato solicitado
         formatted_users.append({
+            "id": u.get("id"),
             "nome": u.get("Name"),
             "curso": u.get("Course"),
             "localidade": u.get("Locality"),
@@ -109,23 +110,26 @@ def update_user(user_id: str, updates: UserUpdate):
         data_to_update["Surname"] = updates.sobrenome
 
     if updates.email is not None:
-        data_to_update["Email"] = updates.nome
+        data_to_update["Email"] = updates.email
 
     if updates.admin is not None:
-        data_to_update["Admin"] = updates.nome
+        data_to_update["Admin"] = updates.admin
 
     if updates.foto is not None:
-        data_to_update["Photo_Profile"] = updates.nome
+        data_to_update["Photo_Profile"] = updates.foto
 
+    # caso nenhum campo tenha sido enviado
     if not data_to_update:
         return {"message": "Nenhum dado enviado para atualização"}
     
     try:
+        # atualiza na tabela "User"
         supabase.table("User").update(data_to_update).eq("id", user_id).execute()
 
+        # se o email foi alterado, atualiza também no Auth
         if updates.email is not None:
             supabase.auth.admin.update_user_by_id(user_id, {
-                "email":updates.email
+                "email": updates.email
             })
 
         return {
