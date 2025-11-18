@@ -61,8 +61,43 @@ def login_user(user: UserLogin):
         return None
 
 def list_user():
-    response = supabase.table("User").select("*").execute()
-    return response.data
+    # Buscar todos os usuários
+    users_res = supabase.table("User").select("*").execute()
+    users = users_res.data
+
+    formatted_users = []
+
+    for u in users:
+        user_id = u.get("id")
+
+        # Buscar tarefas do usuário
+        tasks_res = supabase.table("Task").select("*").eq("Responsible", user_id).execute()
+        tasks = tasks_res.data if tasks_res.data else []
+
+        # Formatar tarefas
+        formatted_tasks = [
+            {
+                "titulo": t.get("Title"),
+                "prazo": t.get("Date_Deadline"),
+                "status": t.get("Status"),
+            }
+            for t in tasks
+        ]
+
+        # Montar objeto final no formato solicitado
+        formatted_users.append({
+            "nome": u.get("Name"),
+            "curso": u.get("Course"),
+            "localidade": u.get("Locality"),
+            "cpf": u.get("Cpf"),
+            "email": u.get("Email"),
+            "foto": u.get("Photo_Profile"),
+            "avaliacao": u.get("Assessment", 0),
+            "tarefas": formatted_tasks
+        })
+
+    return formatted_users
+
 
 def update_user(user_id: str, updates: UserUpdate):
     data_to_update = {}
@@ -73,11 +108,30 @@ def update_user(user_id: str, updates: UserUpdate):
     if updates.sobrenome is not None:
         data_to_update["Surname"] = updates.sobrenome
 
-    if updates.nome is not None:
+    if updates.email is not None:
         data_to_update["Email"] = updates.nome
 
-    if updates.nome is not None:
+    if updates.admin is not None:
         data_to_update["Admin"] = updates.nome
 
-    if updates.nome is not None:
-        data_to_update["Name"] = updates.nome
+    if updates.foto is not None:
+        data_to_update["Photo_Profile"] = updates.nome
+
+    if not data_to_update:
+        return {"message": "Nenhum dado enviado para atualização"}
+    
+    try:
+        supabase.table("User").update(data_to_update).eq("id", user_id).execute()
+
+        if updates.email is not None:
+            supabase.auth.admin.update_user_by_id(user_id, {
+                "email":updates.email
+            })
+
+        return {
+            "message": "Usuário atualizado com sucesso",
+            "updated_fields": data_to_update
+        }
+    
+    except APIError as e:
+        raise Exception(f"Erro ao atualizar usuário: {e}")
