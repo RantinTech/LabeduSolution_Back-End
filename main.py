@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from routes import user_routes
 from routes import task_routes
-from routes import ai
+from routes import alert_email
 from fastapi.middleware.cors import CORSMiddleware
 from apscheduler.schedulers.background import BackgroundScheduler
-from services.task_ai_service import run_task_monitor
+from services.email_service import run_task_monitor_ml
 
 app = FastAPI(
     title="Task Manager API",
@@ -22,8 +22,9 @@ app.add_middleware(
 
 app.include_router(user_routes.router)
 app.include_router(task_routes.router)
-app.include_router(ai.router)
+app.include_router(alert_email.router)
+
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(run_task_monitor, "interval", minutes=30)
+scheduler.add_job(run_task_monitor_ml, "interval", minutes=30)
 scheduler.start()

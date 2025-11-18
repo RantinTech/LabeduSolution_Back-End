@@ -1,12 +1,20 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
+from datetime import date
 
 class UserCreate(BaseModel):
     name: str
     email: EmailStr
-    cargo: Optional[str] = None
+    surname: Optional[str] = None
     photo_profile: Optional[str] = None
     password: str
+    date_register: Optional[date] = None
+    admin: Optional[bool] = False
+    cpf: Optional[str] = None
+    locality: Optional[str] = None
+    course: Optional[str] = None
+    avaliacao: Optional[float] = None
+
 
 class UserLogin(BaseModel):
     email: EmailStr
