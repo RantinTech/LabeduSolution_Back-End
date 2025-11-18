@@ -1,26 +1,21 @@
 from fastapi import FastAPI
+from routes import user_routes
+from routes import task_routes
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers.register import router as register_router
-from routers.login import router as login_router
-from routers.users_routes import router as users_router
-
-
-
-app = FastAPI()
+app = FastAPI(
+    title="Task Manager API",
+    description="API de gestão de tarefas usando Fast + Supabase",
+    version="1.0.0"
+)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8080"],  # front
-    allow_credentials=True,
-    allow_methods=["*"],   # <--- IMPORTANTE: Permite OPTIONS
-    allow_headers=["*"],   # <--- IMPORTANTE
+    allow_origins=["*"],
+    allow_credentials = True,
+    allow_methods=["*"],
+    allow_headers = ["*"]
 )
 
-app.include_router(register_router)
-app.include_router(login_router)
-app.include_router(users_router)
-
-@app.get("/")
-def root():
-    return {"message": "API running"}
+app.include_router(user_routes.router)
+app.include_router(task_routes.router)
